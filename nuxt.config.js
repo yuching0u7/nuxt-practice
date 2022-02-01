@@ -67,5 +67,8 @@ export default {
     mode: 'out-in'
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {}
+  build: {},
+  env:{
+    FIREBASE_API_KEY:'AIzaSyAZ82WjQrNTAZoGfMNCwhv_CXW1Gy8w2ac'
+  }
 }
