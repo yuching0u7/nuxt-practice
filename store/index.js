@@ -19,6 +19,9 @@ const createStore = () => {
       },
       setToken(state, token) {
         state.token = token
+      },
+      clearToken(state) {
+        state.token = null
       }
     },
     actions: {
@@ -75,18 +78,23 @@ const createStore = () => {
           password: authData.password,
           returnSecureToken: true
         }).then(result => {
-          console.log(result)
           context.commit('setToken', result.idToken)
+          context.dispatch('setLogoutTimer', result.expiresIn * 1000)
         }).catch(e => {
           console.log(e)
         })
+      },
+      setLogoutTimer(context, duration) {
+        setTimeout(() => {
+          context.commit('clearToken')
+        }, duration)
       }
     },
     getters: {
       loadedPosts(state) {
         return state.loadedPosts
       },
-      isAuthenticated (state){
+      isAuthenticated(state) {
         return state.token != null
       }
     }
