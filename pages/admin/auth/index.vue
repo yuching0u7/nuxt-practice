@@ -15,6 +15,7 @@
   import AppButton from '@/components/UI/AppButton.vue'
   import AppControlInput from '@/components/UI/AppControlInput.vue'
   export default {
+  layout:'admin',
     components: {
       AppButton,
       AppControlInput
