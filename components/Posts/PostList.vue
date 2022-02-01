@@ -1,7 +1,7 @@
 <template>
   <section class="posts-list">
-    <post-preview :isAdmin="isAdmin" v-for="i in 8" :key="i" :postId="(i*5).toString()" :title="`Post ${i}`"
-      content="This is preview text........" />
+    <post-preview :isAdmin="isAdmin" v-for="(post, index) in posts" :key="post.postId" :postId="post.postId" :img="((index+1)*10).toString()" :title="post.title"
+      :content="post.content" />
   </section>
 </template>
 
@@ -9,6 +9,10 @@
   import PostPreview from '@/components/Posts/PostPreview.vue'
   export default {
     props: {
+      posts:{
+        type:Array,
+        required:true
+      },
       isAdmin: {
         type: Boolean,
         default: false,

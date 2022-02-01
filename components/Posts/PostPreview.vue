@@ -2,11 +2,11 @@
   <div>
     <nuxt-link :to="toPostRoute">
       <article class="post-preview">
-        <div class="post-thumbnail" :style="{backgroundImage:`url('https://picsum.photos/id/${postId}/200/200')`}">
+        <div class="post-thumbnail" :style="{ backgroundImage:`url('https://picsum.photos/id/${img}/200/200')` }">
         </div>
         <div class="post-content">
           <h1>{{ title }}</h1>
-          <p>{{content}}</p>
+          <p>{{ toPreviewText }}</p>
         </div>
       </article>
     </nuxt-link>
@@ -21,6 +21,10 @@
         type: Boolean,
         default: false,
         required: false
+      },
+      img:{
+        type:String,
+        required:true
       },
       postId: {
         type: String,
@@ -39,6 +43,9 @@
       toPostRoute() {
         let route = this.isAdmin ? `/admin/${this.postId}` : `/posts/${this.postId}`
         return route
+      },
+      toPreviewText(){
+        return this.content.slice(0,100) + '...'
       }
     }
   }
