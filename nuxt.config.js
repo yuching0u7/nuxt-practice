@@ -36,7 +36,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['~assets/styles/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -55,6 +55,15 @@ export default {
   ],
   axios: {
     // proxy: true
+  },
+  loading: {
+    color: '#6610f2',
+    height: '10px',
+    duration: 5000
+  },
+  transition: {
+    name: 'fade',
+    mode: 'out-in'
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {}
