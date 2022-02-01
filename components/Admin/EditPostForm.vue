@@ -23,16 +23,10 @@
 
 
 <script>
-import AppButton from '@/components/UI/AppButton.vue'
-import AppControlInput from '@/components/UI/AppControlInput.vue'
 
 export default {
   props:{
     existingPost:{type:Object, required:false}
-  },
-  components:{
-    AppButton,
-    AppControlInput
   },
   data(){
     return{

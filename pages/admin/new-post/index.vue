@@ -8,7 +8,6 @@
 
 
 <script>
-import axios from 'axios'
   import EditPostForm from '@/components/Admin/EditPostForm.vue'
   export default {
     layout: 'admin',
@@ -17,9 +16,9 @@ import axios from 'axios'
     },
     methods: {
       onSavePost(newPost) {
-        this.$store.dispatch('addPost', newPost).then(()=>{
+        this.$store.dispatch('addPost', newPost).then(() => {
           this.$router.push('/admin')
-        })   
+        })
       }
     }
   }

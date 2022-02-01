@@ -39,7 +39,7 @@ export default {
   css: ['~assets/styles/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~plugins/core-component.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -58,7 +58,7 @@ export default {
   },
   loading: {
     color: '#6610f2',
-    height: '10px',
+    height: '8px',
     duration: 5000
   },
   transition: {
