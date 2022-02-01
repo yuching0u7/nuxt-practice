@@ -3,7 +3,7 @@
     <section class="title">
       <h1>Get the latest news!</h1>
     </section>
-    <post-list></post-list>
+    <post-list :posts=loadedPosts></post-list>
   </div>
 </template>
 
@@ -12,6 +12,11 @@
   export default {
     components: {
       PostList
+    },
+    computed: {
+      loadedPosts() {
+        return this.$store.getters.loadedPosts
+      }
     }
   }
 
