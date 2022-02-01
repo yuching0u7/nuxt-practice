@@ -3,7 +3,8 @@ import Vuex from 'vuex'
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      loadedPosts: []
+      loadedPosts: [],
+      token: null
     },
     mutations: {
       setPosts(state, posts) {
@@ -15,6 +16,9 @@ const createStore = () => {
       editPost(state, updatePost) {
         const postIndex = state.loadedPosts.findIndex(post => post.postId === updatePost.postId)
         state.loadedPosts[postIndex] = updatePost
+      },
+      setToken(state, token) {
+        state.token = token
       }
     },
     actions: {
@@ -41,7 +45,7 @@ const createStore = () => {
       },
       addPost(context, newPost) {
         newPost.updateDate = new Date().toISOString()
-        return this.$axios.$post('/posts.json', newPost)
+        return this.$axios.$post(`/posts.json?auth=${context.state.token}`, newPost)
           .then(result => {
             context.commit('addPost', {
               ...newPost,
@@ -54,17 +58,36 @@ const createStore = () => {
       editPost(context, updatePost) {
         updatePost.updateDate = new Date().toISOString()
         return this.$axios.$patch(
-          `/posts/${updatePost.postId}.json`,
-          updatePost).then(result=>{
-            context.commit('editPost', updatePost)
-          }).catch(e=>{
-            console.log(e)
-          })
+          `/posts/${updatePost.postId}.json?auth=${context.state.token}`,
+          updatePost).then(result => {
+          context.commit('editPost', updatePost)
+        }).catch(e => {
+          console.log(e)
+        })
+      },
+      authenticateUser(context, authData) {
+        let authURL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`
+        if (!authData.isLogin) {
+          authURL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.FIREBASE_API_KEY}`
+        }
+        return this.$axios.$post(authURL, {
+          email: authData.email,
+          password: authData.password,
+          returnSecureToken: true
+        }).then(result => {
+          console.log(result)
+          context.commit('setToken', result.idToken)
+        }).catch(e => {
+          console.log(e)
+        })
       }
     },
     getters: {
       loadedPosts(state) {
         return state.loadedPosts
+      },
+      isAuthenticated (state){
+        return state.token != null
       }
     }
   })
