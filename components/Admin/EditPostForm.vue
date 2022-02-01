@@ -37,7 +37,6 @@ export default {
   data(){
     return{
       post:this.existingPost? {...this.existingPost}:{
-        postId:'',
         author:'',
         title:'',
         content:''
@@ -46,10 +45,11 @@ export default {
   },
   methods:{
     onCancel(){
-
+      this.$router.push('/admin')
     },
     onSave(){
-      this.$router.push('/admin')
+      // console.log(this.post)
+      this.$emit('save', this.post)
     }
   }
 }
