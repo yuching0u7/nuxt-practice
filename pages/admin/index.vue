@@ -6,7 +6,7 @@
     </section>
     <section class="existing-posts">
       <h1 class="mt-3">Existing Posts</h1>
-      <post-list :isAdmin="true" />
+      <post-list :posts="loadedPosts" :isAdmin="true" />
     </section>
 
   </div>
@@ -18,6 +18,11 @@
     layout: 'admin',
     components: {
       PostList
+    },
+    computed:{
+      loadedPosts(){
+        return this.$store.getters.loadedPosts
+      }
     }
   }
 
