@@ -1,8 +1,8 @@
 <template>
   <div class="admin-page">
     <section class="new-post">
-      <b-button variant="outline-info" @click.prevent="$router.push('/admin/new-post')">Add Post</b-button>
-      <nuxt-child />
+      <b-button variant="outline-info" @click="$router.push('/admin/new-post')">Add Post</b-button>
+      <b-button class="ml-3" variant="outline-info" @click="onLogout">Logout</b-button>
     </section>
     <section class="existing-posts">
       <h1 class="mt-3">Existing Posts</h1>
@@ -14,11 +14,17 @@
 
 <script>
   export default {
-    middleware:'auth',
+    middleware: ['check-auth', 'auth'],
     layout: 'admin',
-    computed:{
-      loadedPosts(){
+    computed: {
+      loadedPosts() {
         return this.$store.getters.loadedPosts
+      },
+    },
+    methods:{
+      onLogout(){
+        this.$store.dispatch('logout')
+        this.$router.push('/admin/auth')
       }
     }
   }

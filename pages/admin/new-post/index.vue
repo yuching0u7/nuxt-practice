@@ -10,7 +10,7 @@
 <script>
   import EditPostForm from '@/components/Admin/EditPostForm.vue'
   export default {
-    middleware:'auth',
+    middleware: ['check-auth', 'auth'],
     layout: 'admin',
     components: {
       EditPostForm,

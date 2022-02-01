@@ -1,4 +1,5 @@
-import Vuex from 'vuex'
+import Vuex from "vuex"
+import Cookie from "js-cookie"
 
 const createStore = () => {
   return new Vuex.Store({
@@ -27,7 +28,7 @@ const createStore = () => {
     actions: {
       nuxtServerInit(vuexContext, context) {
         // server side render
-        return context.app.$axios.$get('/posts.json')
+        return context.app.$axios.$get("/posts.json")
           .then(result => {
             let posts = []
             for (let key in result) {
@@ -36,7 +37,7 @@ const createStore = () => {
                 postId: key
               })
             }
-            vuexContext.commit('setPosts', posts)
+            vuexContext.commit("setPosts", posts)
           })
           .catch(e => {
             console.log(e)
@@ -44,13 +45,13 @@ const createStore = () => {
       },
       setPosts(context, posts) {
         console.log(posts)
-        context.commit('setPosts', posts)
+        context.commit("setPosts", posts)
       },
       addPost(context, newPost) {
         newPost.updateDate = new Date().toISOString()
         return this.$axios.$post(`/posts.json?auth=${context.state.token}`, newPost)
           .then(result => {
-            context.commit('addPost', {
+            context.commit("addPost", {
               ...newPost,
               postId: result.name
             })
@@ -63,7 +64,7 @@ const createStore = () => {
         return this.$axios.$patch(
           `/posts/${updatePost.postId}.json?auth=${context.state.token}`,
           updatePost).then(result => {
-          context.commit('editPost', updatePost)
+          context.commit("editPost", updatePost)
         }).catch(e => {
           console.log(e)
         })
@@ -78,16 +79,56 @@ const createStore = () => {
           password: authData.password,
           returnSecureToken: true
         }).then(result => {
-          context.commit('setToken', result.idToken)
-          context.dispatch('setLogoutTimer', result.expiresIn * 1000)
+          context.commit("setToken", result.idToken)
+          localStorage.setItem("token", result.idToken)
+          localStorage.setItem("tokenExpiration",Date.now() + (+result.expiresIn * 1000))
+          Cookie.set("jwt",  result.idToken)
+          Cookie.set("tokenExpiration", (Date.now() + (+result.expiresIn * 1000)))
         }).catch(e => {
           console.log(e)
         })
       },
-      setLogoutTimer(context, duration) {
-        setTimeout(() => {
-          context.commit('clearToken')
-        }, duration)
+      initAuth(context, req) {
+        let token;
+        let tokenExpiration;
+        if(req){
+          if(!req.headers.cookie){
+            return;
+          }
+          console.log(req.headers.cookie)
+          const jwtCookie = req.headers.cookie.split(";").find(c=>c.trim().startsWith("jwt="))
+          if(!jwtCookie){
+            return;
+          }
+          token = jwtCookie.split("=")[1]
+          tokenExpiration = req.headers.cookie.split(";").find(c=>c.trim().startsWith("tokenExpiration=")).split("=")[1]
+          console.log(token)
+          console.log(tokenExpiration)
+        }else{
+          token = localStorage.getItem("token")
+          tokenExpiration = localStorage.getItem("tokenExpiration")
+          console.log(token)
+          console.log(tokenExpiration)
+        }
+
+        console.log(token)
+        console.log(tokenExpiration)
+        if (Date.now() > +tokenExpiration || !token) {
+          console.log("No token or invalid token");
+          context.dispatch("logout");
+          return;
+        }
+        console.log(token)
+        context.commit("setToken", token)
+      },
+      logout(context) {
+        context.commit("clearToken");
+        Cookie.remove("jwt");
+        Cookie.remove("tokenExpiration");
+        if (process.client) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("tokenExpiration");
+        }
       }
     },
     getters: {
@@ -95,7 +136,7 @@ const createStore = () => {
         return state.loadedPosts
       },
       isAuthenticated(state) {
-        return state.token != null
+        return state.token != null;
       }
     }
   })
