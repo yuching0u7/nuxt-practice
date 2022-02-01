@@ -1,5 +1,4 @@
 import Vuex from 'vuex'
-import axios from 'axios'
 
 const createStore = () => {
   return new Vuex.Store({
@@ -21,16 +20,15 @@ const createStore = () => {
     actions: {
       nuxtServerInit(vuexContext, context) {
         // server side render
-        return axios.get('https://nuxt-practice-1cc8e-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json ')
+        return context.app.$axios.$get('/posts.json')
           .then(result => {
             let posts = []
-            for (let key in result.data) {
+            for (let key in result) {
               posts.push({
-                ...result.data[key],
+                ...result[key],
                 postId: key
               })
             }
-            // console.log(posts)
             vuexContext.commit('setPosts', posts)
           })
           .catch(e => {
@@ -43,11 +41,11 @@ const createStore = () => {
       },
       addPost(context, newPost) {
         newPost.updateDate = new Date().toISOString()
-        return axios.post('https://nuxt-practice-1cc8e-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json', newPost)
+        return this.$axios.$post('/posts.json', newPost)
           .then(result => {
             context.commit('addPost', {
               ...newPost,
-              postId: result.data.name
+              postId: result.name
             })
           }).catch(e => {
             console.log(e)
@@ -55,8 +53,8 @@ const createStore = () => {
       },
       editPost(context, updatePost) {
         updatePost.updateDate = new Date().toISOString()
-        return axios.patch(
-          `https://nuxt-practice-1cc8e-default-rtdb.asia-southeast1.firebasedatabase.app/posts/${updatePost.postId}.json`,
+        return this.$axios.$patch(
+          `/posts/${updatePost.postId}.json`,
           updatePost).then(result=>{
             context.commit('editPost', updatePost)
           }).catch(e=>{

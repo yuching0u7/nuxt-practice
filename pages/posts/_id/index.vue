@@ -14,15 +14,14 @@
   </div>
 </template>
 <script>
-  import axios from 'axios'
   export default {
     asyncData(context) {
       const postId = context.params.id
-      return axios.get(`https://nuxt-practice-1cc8e-default-rtdb.asia-southeast1.firebasedatabase.app/posts/${postId}.json `)
+      return context.app.$axios.$get(`/posts/${postId}.json `)
         .then(result => {
           return {
             post: {
-              ...result.data,
+              ...result,
               postId: postId
             }
           }

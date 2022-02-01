@@ -10,21 +10,20 @@
 
 
 <script>
-  import axios from 'axios'
   import EditPostForm from '@/components/Admin/EditPostForm.vue'
   export default {
     layout: 'admin',
     components: {
       EditPostForm
     },
-    asyncData(content) {
-      const postId = content.params.postId
-      return axios.get(
-          `https://nuxt-practice-1cc8e-default-rtdb.asia-southeast1.firebasedatabase.app/posts/${postId}.json`)
+    asyncData(context) {
+      const postId = context.params.postId
+      return context.app.$axios.$get(
+          `/posts/${postId}.json`)
         .then(result => {
           return {
             post: {
-              ...result.data,
+              ...result,
               postId: postId
             }
           }

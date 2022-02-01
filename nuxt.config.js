@@ -55,6 +55,7 @@ export default {
   ],
   axios: {
     // proxy: true
+    baseURL: 'https://nuxt-practice-1cc8e-default-rtdb.asia-southeast1.firebasedatabase.app'
   },
   loading: {
     color: '#6610f2',
