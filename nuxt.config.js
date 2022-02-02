@@ -1,3 +1,6 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -70,5 +73,9 @@ export default {
   build: {},
   env:{
     FIREBASE_API_KEY:'AIzaSyAZ82WjQrNTAZoGfMNCwhv_CXW1Gy8w2ac'
-  }
+  },
+  serverMiddleware:[
+    bodyParser.json(),
+    '~/api'
+  ]
 }

@@ -84,6 +84,7 @@ const createStore = () => {
           localStorage.setItem("tokenExpiration",Date.now() + (+result.expiresIn * 1000))
           Cookie.set("jwt",  result.idToken)
           Cookie.set("tokenExpiration", (Date.now() + (+result.expiresIn * 1000)))
+          // return this.$axios.post('http://localhost:3000/api/track-data',{data:'Hello!'})
         }).catch(e => {
           console.log(e)
         })
@@ -95,30 +96,23 @@ const createStore = () => {
           if(!req.headers.cookie){
             return;
           }
-          console.log(req.headers.cookie)
+          // console.log(req.headers.cookie)
           const jwtCookie = req.headers.cookie.split(";").find(c=>c.trim().startsWith("jwt="))
           if(!jwtCookie){
             return;
           }
           token = jwtCookie.split("=")[1]
           tokenExpiration = req.headers.cookie.split(";").find(c=>c.trim().startsWith("tokenExpiration=")).split("=")[1]
-          console.log(token)
-          console.log(tokenExpiration)
         }else{
           token = localStorage.getItem("token")
           tokenExpiration = localStorage.getItem("tokenExpiration")
-          console.log(token)
-          console.log(tokenExpiration)
         }
 
-        console.log(token)
-        console.log(tokenExpiration)
         if (Date.now() > +tokenExpiration || !token) {
           console.log("No token or invalid token");
           context.dispatch("logout");
           return;
         }
-        console.log(token)
         context.commit("setToken", token)
       },
       logout(context) {
